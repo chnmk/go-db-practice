@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 type ParcelStore struct {
@@ -74,7 +73,7 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 	err = rows.Err()
 	// Проверяем курсор на наличие ошибок
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
 	return res, nil

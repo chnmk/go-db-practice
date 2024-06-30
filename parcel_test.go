@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"math/rand"
-	"reflect"
 	"testing"
 	"time"
 
@@ -44,6 +43,7 @@ func TestAddGetDelete(t *testing.T) {
 	// add
 	// Добавляем новую посылку в БД
 	id, err := store.Add(parcel)
+	parcel.Number = id // Т.к. Number по умолчанию 0, а нам нужно сравнить все поля
 
 	// Проверка на отсутствие ошибки и наличие идентификатора
 	require.NoError(t, err)
@@ -55,10 +55,7 @@ func TestAddGetDelete(t *testing.T) {
 	require.NoError(t, err)
 
 	// Проверяем, что значения всех полей в полученном объекте совпадают со значениями полей в переменной parcel
-	assert.Equal(t, parcel.Client, p.Client)
-	assert.Equal(t, parcel.Status, p.Status)
-	assert.Equal(t, parcel.Address, p.Address)
-	assert.Equal(t, parcel.CreatedAt, p.CreatedAt)
+	require.Equal(t, parcel, p)
 
 	// delete
 	// Удаляем добавленную посылку, убеждаемся в отсутствии ошибки
@@ -199,6 +196,6 @@ func TestGetByClient(t *testing.T) {
 		require.True(t, exists)
 
 		// Проверяем, что значения полей заполнены верно
-		assert.True(t, reflect.DeepEqual(parcelFromMap, parcel))
+		require.Equal(t, parcelFromMap, parcel)
 	}
 }
